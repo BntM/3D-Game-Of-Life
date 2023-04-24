@@ -35,7 +35,7 @@ int main()
             }
         }
     }
-
+   //change cell based on neighbours
     for(int x = 0; x < 10; x++)
     {
         for(int y = 0; y < 10; y++)
@@ -45,14 +45,16 @@ int main()
                 int neighbours = checkSurround(x, y, z, cells);
                 if(cells[x][y][z])
                 {
-                    if(neighbours < 7 || neighbours > 20)
+                  //true = false if neighbours < 9 || > 18
+                    if(neighbours < 9 || neighbours > 18)
                     {
                         cells[x][y][z] = false;
                     }
                 }
                 else
                 {
-                    if(neighbours > 7 || neighbours < 20)
+                  //false = true if neighbours > 9 || < 18
+                    if(neighbours > 9 || neighbours < 18)
                     {
                         cells[x][y][z] = true;
                     }
