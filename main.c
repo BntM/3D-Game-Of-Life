@@ -1,6 +1,34 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+//Prints out the state of each cell
+int visualize(bool cells[10][10][10]) {
+    int cubeSize = 10;
+    for(int x = 0; x < cubeSize; x++) {
+        printf("X");
+        printf("%d", x);
+        printf("\n");
+        for(int y = 0; y < cubeSize; y++) {
+            printf("Y");
+            printf("%d", y);
+            for(int z = 0; z < cubeSize; z++) {
+                printf(" Z");
+                printf("%d", z);
+                printf(": ");
+                if(cells[x][y][z]) {
+                    printf("1");
+                }
+                else {
+                    printf("0");
+                }
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
 //chekc Cells surrounding given for num of alive cells
 int checkSurround(int midX, int midY, int midZ, bool cells[10][10][10])
    {
@@ -35,6 +63,7 @@ int main()
             }
         }
     }
+    visualize(cells);
    //change cell based on neighbours
     for(int x = 0; x < 10; x++)
     {
