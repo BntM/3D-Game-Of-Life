@@ -35,6 +35,10 @@ int main()
             }
         }
     }
+    return 0;
+}
+int * nextState(bool cells[][][])
+{
    //change cell based on neighbours
     for(int x = 0; x < 10; x++)
     {
@@ -62,5 +66,5 @@ int main()
             }
         }
     }
-    return 0;
+   return cells;
 }
