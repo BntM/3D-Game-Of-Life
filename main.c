@@ -1,9 +1,16 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#define xLen 4
+#define yLen 4
+#define zLen 4
+
+//https://github.com/3DSage/OpenGL-Starter_v1
 
 //Prints out the state of each cell
-int visualize(bool cells[10][10][10]) {
-    int cubeSize = 10;
+int visualize(bool cells[4][4][4]) {
+    int cubeSize = 4;
     for(int x = 0; x < cubeSize; x++) {
         printf("X");
         printf("%d", x);
@@ -30,16 +37,16 @@ int visualize(bool cells[10][10][10]) {
 }
 
 //chekc Cells surrounding given for num of alive cells
-int checkSurround(int midX, int midY, int midZ, bool cells[10][10][10])
+int checkSurround(int midX, int midY, int midZ, bool* cells)
    {
       int count = 0;
       for(int x = midX - 1; x <= midX + 1; x++)
       {
          for(int y = midY - 1; y <= midY + 1; y++)
          {
-             for(int z = midZ - 1; y <= midZ + 1; z++)
+             for(int z = midZ - 1; z <= midZ + 1; z++)
              {
-               if(!(x == midX && y == midY && z == midZ) && cells[x][y][z]){
+               if(!(x == midX && y == midY && z == midZ) && cells[(x * xLen) + (y * yLen) + z]){
                   count++;
                }
              }
@@ -47,41 +54,46 @@ int checkSurround(int midX, int midY, int midZ, bool cells[10][10][10])
       }
       return count;
     }
+bool* nextState(bool* cells);
 
 int main()
 {
     printf("Hello World\n");
     //initialize cells
-    bool cells[10][10][10];
-    for(int x = 0; x < 10; x++)
+    bool cells[4][4][4];
+    for(int x = 0; x < 4; x++)
     {
-        for(int y = 0; y < 10; y++)
+        for(int y = 0; y < 4; y++)
         {
-            for(int z = 0; z < 10; z++)
+            for(int z = 0; z < 4; z++)
             {
                 cells[x][y][z] = false;
             }
         }
     }
-    visualize(cells);
+    for(int i = 0; i < 4; i++)
+    {
+        visualize(cells);
+        nextState(*cells[0]);
+    }
     return 0;
 }
-int * nextState(bool cells[][][])
+bool* nextState(bool* cells)
 {
    //change cell based on neighbours
-    for(int x = 0; x < 10; x++)
+    for(int x = 0; x < xLen; x++)
     {
-        for(int y = 0; y < 10; y++)
+        for(int y = 0; y < yLen; y++)
         {
-            for(int z = 0; z < 10; z++)
+            for(int z = 0; z < zLen; z++)
             {
                 int neighbours = checkSurround(x, y, z, cells);
-                if(cells[x][y][z])
+                if(cells[(x * xLen) + (y * yLen) + z])
                 {
                   //true = false if neighbours < 9 || > 18
                     if(neighbours < 9 || neighbours > 18)
                     {
-                        cells[x][y][z] = false;
+                        cells[(x * xLen) + (y * yLen) + z] = false;
                     }
                 }
                 else
@@ -89,7 +101,7 @@ int * nextState(bool cells[][][])
                   //false = true if neighbours > 9 || < 18
                     if(neighbours > 9 || neighbours < 18)
                     {
-                        cells[x][y][z] = true;
+                        cells[(x * xLen) + (y * yLen) + z] = true;
                     }
                 }
             }
