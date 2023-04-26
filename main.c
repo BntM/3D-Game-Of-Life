@@ -19,8 +19,8 @@ int visualize(bool cells[4][4][4]) {
             printf("Y");
             printf("%d", y);
             for(int z = 0; z < cubeSize; z++) {
-                printf(" Z");
-                printf("%d", z);
+                //printf(" Z");
+                //printf("%d", z);
                 printf(": ");
                 if(cells[x][y][z]) {
                     printf("1");
@@ -38,22 +38,22 @@ int visualize(bool cells[4][4][4]) {
 
 //chekc Cells surrounding given for num of alive cells
 int checkSurround(int midX, int midY, int midZ, bool* cells)
-   {
-      int count = 0;
-      for(int x = midX - 1; x <= midX + 1; x++)
-      {
-         for(int y = midY - 1; y <= midY + 1; y++)
-         {
-             for(int z = midZ - 1; z <= midZ + 1; z++)
-             {
-               if(!(x == midX && y == midY && z == midZ) && cells[(x * xLen) + (y * yLen) + z]){
-                  count++;
-               }
-             }
-         }
-      }
-      return count;
+{
+    int count = 0;
+    for(int x = midX - 1; x <= midX + 1; x++)
+    {
+        for(int y = midY - 1; y <= midY + 1; y++)
+        {
+            for(int z = midZ - 1; z <= midZ + 1; z++)
+            {
+            if(!(x == midX && y == midY && z == midZ) && cells[(x * xLen) + (y * yLen) + z]){
+                count++;
+            }
+            }
+        }
     }
+    return count;
+}
 bool* nextState(bool* cells);
 
 int main()
@@ -71,7 +71,7 @@ int main()
             }
         }
     }
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 3; i++)
     {
         visualize(cells);
         nextState(*cells[0]);
@@ -81,26 +81,28 @@ int main()
 bool* nextState(bool* cells)
 {
    //change cell based on neighbours
-    for(int x = 0; x < xLen; x++)
+    for(int x = 1; x < xLen - 1; x++)
     {
-        for(int y = 0; y < yLen; y++)
+        for(int y = 1; y < yLen - 1; y++)
         {
-            for(int z = 0; z < zLen; z++)
+            for(int z = 1; z < zLen - 1; z++)
             {
                 int neighbours = checkSurround(x, y, z, cells);
                 if(cells[(x * xLen) + (y * yLen) + z])
                 {
                   //true = false if neighbours < 9 || > 18
-                    if(neighbours < 9 || neighbours > 18)
+                    if(neighbours < 9 && neighbours > 18)
                     {
+                        printf("%d %d %d\n",x , y, z);
                         cells[(x * xLen) + (y * yLen) + z] = false;
                     }
                 }
                 else
                 {
                   //false = true if neighbours > 9 || < 18
-                    if(neighbours > 9 || neighbours < 18)
+                    if(neighbours > 9 && neighbours < 18)
                     {
+                        printf("%d %d %d : %d\n",x , y, z, neighbours);
                         cells[(x * xLen) + (y * yLen) + z] = true;
                     }
                 }
