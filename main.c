@@ -2,51 +2,37 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <string.h>
 
 #define xLen 4
 #define yLen 4
 #define zLen 4
 
-struct Matrix
-{
-
-};
-
-//Prints out the state of each cell
+//prints out the state of each cell
 int visualize(bool cells[xLen][yLen][zLen]) {
-    initscr();
-    for(int i = 0; i < 10; i++)
-    {
-        for(int x = 0; x < i; x++)
-        {
-            printw("*");
-        }
-        refresh();
-    }
-    printw("idk");
-    /*int cubeSize = 4;
-    for(int x = 0; x < cubeSize; x++) {
-        printf("X");
-        //printf("%d", x);
-        printf("\n");
-        for(int y = 0; y < cubeSize; y++) {
-            //printf("Y");
-            //printf("%d", y);
-            for(int z = 0; z < cubeSize; z++) {
-                //printf(" Z");
-                //printf("%d", z);
-                //printf(": ");
+    int cubesize = 4;
+    for(int x = 0; x < cubesize; x++) {
+        //printw("%d", x);
+        for(int y = 0; y < cubesize; y++) {
+            //printw("y");
+            //printw("%d", y);
+            for(int z = 0; z < cubesize; z++) {
+                //printw(" z");
+                //printw("%d", z);
+                //printw(": ");
                 if(cells[x][y][z]) {
-                    printf("*");
+                    printw("*");
                 }
                 else {
-                    printf(" ");
+                    printw("-");
                 }
             }
-            printf("\n");
+            printw("\n");
         }
-        printf("\n");
-    }*/
+        printw("\n");
+    }
+    printw("\n");
+    
     return 0;
 }
 
@@ -72,6 +58,9 @@ bool*** nextState(bool x[][4][4]);
 
 int main()
 {
+    //initizlize screen
+    initscr();
+    cbreak();
     //initialize cells
     bool cells[4][4][4];
     for(int x = 0; x < 4; x++)
@@ -85,11 +74,16 @@ int main()
         }
     }
     cells[2][2][2] = true;
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 1; i++)
     {
+        //visualize
         visualize(cells);
-        bool*** output = nextState(cells);
+        memcpy(cells, nextState(cells), sizeof cells);
     }
+    //end ncurses
+    refresh();
+    getch();
+    endwin();
     return 0;
 }
 bool*** nextState(bool cells[][4][4]){
@@ -109,7 +103,7 @@ bool*** nextState(bool cells[][4][4]){
                   //true = false if neighbours < 9 || > 18
                     if(neighbours < 9 && neighbours > 18)
                     {
-                        printf("%d %d %d\n",x , y, z);
+                        //printw("%d %d %d\n",x , y, z);
                         outputArray[x][y][z] = false;
                     }
                 }
@@ -118,7 +112,7 @@ bool*** nextState(bool cells[][4][4]){
                   //false = true if neighbours > 9 || < 18
                     if(neighbours > 9 && neighbours < 18)
                     {
-                        printf("%d %d %d : %d\n",x , y, z, neighbours);
+                        //printw("%d %d %d : %d\n",x , y, z, neighbours);
                         outputArray[x][y][z] = true;
                     }
                 }
