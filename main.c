@@ -8,36 +8,36 @@
 #define yLen 10
 #define zLen 10
 
+//x coordinate drawing cells
+int xCoordinate, yCoordinate;
+
 //prints out the state of each cell
 int visualize(bool cells[xLen][yLen][zLen]) {
-    move(0,0);
+    yCoordinate = 0;
+    xCoordinate = 0;
+    move(yCoordinate, xCoordinate);
     int cubesize = 10;
     for(int x = 0; x < 3; x++) {
-        //printw("%d", x);
         for(int y = 0; y < cubesize; y++) {
-            //printw("y");
-            //printw("%d", y);
             for(int z = 0; z < cubesize; z++) {
-                //printw(" z");
-                //printw("%d", z);
-                //printw(": ");
                 if(cells[x][y][z]) {
-                    printw("*");
+                    printw(" *");
                 }
                 else {
-                    printw("-");
+                    printw(" -");
                 }
             }
-            printw("\n");
+            yCoordinate++;
+            move(yCoordinate, xCoordinate);
         }
-        printw("\n");
+        yCoordinate = 0;
+        xCoordinate += 22;
+        move(yCoordinate, xCoordinate);
     }
-    printw("\n");
-    
     return 0;
 }
 
-//chekc Cells surrounding given for num of alive cells
+//check Cells surrounding given for num of alive cells
 int checkSurround(int midX, int midY, int midZ, bool cells[][10][10])
 {
     int count = 0;
@@ -55,6 +55,7 @@ int checkSurround(int midX, int midY, int midZ, bool cells[][10][10])
     }
     return count;
 }
+
 bool*** nextState(bool x[][10][10]);
 
 int main()
@@ -89,7 +90,6 @@ int main()
         visualize(cells);
         memcpy(cells, nextState(cells), sizeof cells);
         refresh();
-
     }
     //end ncurses
     getch();
@@ -98,7 +98,7 @@ int main()
 }
 bool*** nextState(bool cells[][10][10]){
     bool*** outputArray = malloc(sizeof(bool**) * 10);
-   //change cell based on neighbours
+    //change cell based on neighbours
     for(int x = 1; x < xLen - 1; x++)
     {
         outputArray[x] = malloc(sizeof(bool**) * 10);
@@ -119,7 +119,7 @@ bool*** nextState(bool cells[][10][10]){
                 }
                 else
                 {
-                  //false = true if neighbours > 9 || < 18
+                    //false = true if neighbours > 9 || < 18
                     if(neighbours > 9 && neighbours < 18)
                     {
                         //printw("%d %d %d : %d\n",x , y, z, neighbours);
