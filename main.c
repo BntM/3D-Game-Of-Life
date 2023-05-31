@@ -63,6 +63,8 @@ int main()
     //initizlize screen
     initscr();
     cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
     //initialize cells
     bool cells[3][10][10];
     for(int x = 0; x < 3; x++)
@@ -83,13 +85,45 @@ int main()
     //    memcpy(cells, nextState(cells), sizeof cells);
     //    refresh();
     //}
-    int c;
-    while((c=getch())!=' ')
+    int c = getch();
+    int cursorX, cursorY = 4;
+    while((c=getch()) != 'q')
     {
         //visualize
         visualize(cells);
         memcpy(cells, nextState(cells), sizeof cells);
         refresh();
+        switch(c)
+        {
+            case KEY_UP:
+                if(cursorY > 0)
+                {
+                    cursorY == cursorY - 1;
+                }
+                move(cursorY, cursorX);    
+            case KEY_DOWN:
+                cursorY == cursorY + 1;
+                move(cursorY, cursorX);    
+            case KEY_RIGHT:
+                cursorX == cursorX + 1;
+                move(cursorY, cursorX);    
+            case KEY_LEFT:
+                if(cursorX > 0)
+                {
+                    cursorX == cursorX - 1;
+                }
+                move(cursorY, cursorX);    
+            case ',':
+                cursorX == cursorX + 6;
+                move(cursorY, cursorX);    
+                printw("x");
+                refresh();
+                getch();
+            case '.':
+                move(0, 0);    
+            case ' ':
+                move(0, 0);    
+        }
     }
     //end ncurses
     getch();
