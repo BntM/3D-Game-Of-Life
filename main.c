@@ -21,10 +21,10 @@ int visualize(bool cells[xLen][yLen][zLen]) {
         for(int y = 0; y < cubesize; y++) {
             for(int z = 0; z < cubesize; z++) {
                 if(cells[x][y][z]) {
-                    printw(" *");
+                    printw("* ");
                 }
                 else {
-                    printw(" -");
+                    printw("- ");
                 }
             }
             yCoordinate++;
@@ -86,43 +86,48 @@ int main()
     //    refresh();
     //}
     int c = getch();
-    int cursorX, cursorY = 4;
+    int cursorX = 0;
+    int cursorY = 0;
     while((c=getch()) != 'q')
     {
         //visualize
         visualize(cells);
         memcpy(cells, nextState(cells), sizeof cells);
-        refresh();
+        printw("%d, %d", cursorY, cursorX/2);
         switch(c)
         {
             case KEY_UP:
                 if(cursorY > 0)
                 {
-                    cursorY == cursorY - 1;
+                    cursorY = cursorY - 1;
+                    move(cursorY, cursorX);    
+                    refresh();
+                    getch();
                 }
-                move(cursorY, cursorX);    
+                break;
             case KEY_DOWN:
-                cursorY == cursorY + 1;
+                cursorY = cursorY + 1;
                 move(cursorY, cursorX);    
+                refresh();
+                getch();
+                break;
             case KEY_RIGHT:
-                cursorX == cursorX + 1;
+                cursorX = cursorX + 2;
                 move(cursorY, cursorX);    
+                refresh();
+                getch();
+                break;
             case KEY_LEFT:
                 if(cursorX > 0)
                 {
-                    cursorX == cursorX - 1;
+                    cursorX = cursorX - 2;
+                    move(cursorY, cursorX);    
+                    refresh();
+                    getch();
                 }
-                move(cursorY, cursorX);    
-            case ',':
-                cursorX == cursorX + 6;
-                move(cursorY, cursorX);    
-                printw("x");
-                refresh();
-                getch();
-            case '.':
-                move(0, 0);    
-            case ' ':
-                move(0, 0);    
+                break;
+            //case ',':
+            //case '.':
         }
     }
     //end ncurses
