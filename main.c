@@ -57,6 +57,7 @@ int checkSurround(int midX, int midY, int midZ, bool cells[][10][10])
 }
 
 bool*** nextState(bool x[][10][10]);
+int* cursorToCoordinate(int x[]);
 
 int main()
 {
@@ -78,22 +79,22 @@ int main()
         }
     }
     cells[2][2][2] = true;
-    //for(int i = 0; i < 3; i++)
-    //{
-    //    //visualize
-    //    visualize(cells);
-    //    memcpy(cells, nextState(cells), sizeof cells);
-    //    refresh();
-    //}
     int c = getch();
     int cursorX = 0;
     int cursorY = 0;
+    //get new state while input is not q
     while((c=getch()) != 'q')
     {
+        clear();
         //visualize
         visualize(cells);
         memcpy(cells, nextState(cells), sizeof cells);
-        printw("%d, %d", cursorY, cursorX/2);
+        int cursorx = cursorX/2;
+        printw("%d, %d", cursorY, cursorX);
+        int j[] = {cursorX, cursorY};
+        int* cellLoc = cursorToCoordinate(j);
+        printw(" %d, %d, %d" ,cellLoc[0], cellLoc[1], cellLoc[2]);
+        //move cursor based on key input
         switch(c)
         {
             case KEY_UP:
@@ -102,20 +103,17 @@ int main()
                     cursorY = cursorY - 1;
                     move(cursorY, cursorX);    
                     refresh();
-                    getch();
                 }
                 break;
             case KEY_DOWN:
                 cursorY = cursorY + 1;
                 move(cursorY, cursorX);    
                 refresh();
-                getch();
                 break;
             case KEY_RIGHT:
                 cursorX = cursorX + 2;
                 move(cursorY, cursorX);    
                 refresh();
-                getch();
                 break;
             case KEY_LEFT:
                 if(cursorX > 0)
@@ -123,11 +121,20 @@ int main()
                     cursorX = cursorX - 2;
                     move(cursorY, cursorX);    
                     refresh();
-                    getch();
                 }
                 break;
-            //case ',':
-            //case '.':
+            //set cell at cursor to true or false
+            case ',':
+                move(10, 10);
+                refresh();
+                /*/cells[cellLoc[0]][cellLoc[1]][cellLoc[2]] = false;
+                visualize(cells);
+                break;*/
+                break;
+            case '.':
+                cells[cellLoc[0]][cellLoc[1]][cellLoc[2]] = true;
+                visualize(cells);
+                break;
         }
     }
     //end ncurses
@@ -135,6 +142,19 @@ int main()
     endwin();
     return 0;
 }
+//takes cursor location and returns cell location
+int* cursorToCoordinate(int cursor[])
+{
+    int* outputArray = malloc(sizeof(int*) * 3);
+    //x coordinate
+    outputArray[0] = cursor[0]%11;
+    //y coordinate
+    outputArray[1] = 10 - cursor[1];
+    // z coordinate
+    outputArray[2]= cursor[0]/22;
+    return outputArray;
+}
+
 bool*** nextState(bool cells[][10][10]){
     bool*** outputArray = malloc(sizeof(bool**) * 10);
     //change cell based on neighbours
@@ -152,7 +172,6 @@ bool*** nextState(bool cells[][10][10]){
                   //true = false if neighbours < 9 || > 18
                     if(neighbours < 9 && neighbours > 18)
                     {
-                        //printw("%d %d %d\n",x , y, z);
                         outputArray[x][y][z] = false;
                     }
                 }
@@ -161,7 +180,6 @@ bool*** nextState(bool cells[][10][10]){
                     //false = true if neighbours > 9 || < 18
                     if(neighbours > 9 && neighbours < 18)
                     {
-                        //printw("%d %d %d : %d\n",x , y, z, neighbours);
                         outputArray[x][y][z] = true;
                     }
                 }
