@@ -8,6 +8,14 @@
 #define yLen 10
 #define zLen 10
 
+struct node
+{
+    bool cells[5][10][10];
+    struct node *next;
+    struct node *previous;
+};
+
+
 //x coordinate drawing cells
 int xCoordinate, yCoordinate;
 
@@ -37,7 +45,7 @@ int visualize(bool cells[xLen][yLen][zLen]) {
     return 0;
 }
 
-//check Cells surrounding given for num of alive cells
+//return number of live neighbouring cells given cell coordinate
 int checkSurround(int midX, int midY, int midZ, bool cells[][10][10])
 {
     int count = 0;
@@ -83,7 +91,13 @@ int main()
     int cursorY = 0;
     int c = ' ';
     int* cellLoc;
-    //get new state while input is not q
+
+    //pointers for double linked list
+    struct node *head = NULL;
+    struct node *first = NULL;
+    struct node *temp = NULL;
+    struct node *tail = NULL;
+    //get initial state of cells
     while(c != 'q')
     {
         clear();
@@ -135,8 +149,6 @@ int main()
     while(c != 'q')
     {
         clear();
-        //visualize
-        //visualize(cells);
         //change cell based on neighbours
         for(int x = 1; x < xLen - 1; x++)
         {
@@ -164,46 +176,30 @@ int main()
                 }
             }
         }
+        struct node *current = (struct node*) malloc(sizeof(struct node));
         memcpy(cells, outputArray, sizeof cells);
-        //move cursor based on key input
-        switch(c)
+        memcpy(&current->cells, outputArray, sizeof cells);
+        //double linked list to navigate to differnet states(in progress)
+        if(head == NULL)
         {
-            case KEY_UP:
-                if(cursorY > 0)
-                {
-                    cursorY = cursorY - 1;
-                }
-            break;
-            case KEY_DOWN:
-                cursorY = cursorY + 1;
-            break;
-            case KEY_RIGHT:
-                cursorX = cursorX + 2;
-            break;
-            case KEY_LEFT:
-                if(cursorX > 0)
-                {
-                    cursorX = cursorX - 2;
-                }
-            break;
-            //set cell at cursor to true or false
-            case ',':
-                cells[cellLoc[2]][cellLoc[1]][cellLoc[0]] = true;
-                memcpy(cells, cells, sizeof cells);
-                printw("%s", cells[cellLoc[0]][cellLoc[1]][cellLoc[2]]?"true":"false");
-                break;
-            case '.':
-                cells[cellLoc[2]][cellLoc[1]][cellLoc[0]] = false;
-                memcpy(cells, cells, sizeof cells);
-                printw("%s", cells[cellLoc[0]][cellLoc[1]][cellLoc[2]]?"true":"false");
-                break;
+            head = current;
+            first = head;
+            tail = head;
         }
+        temp = current;
+        first->next = temp;
+        temp->previous = first;
+        first = temp;
+        tail = temp;
+
         visualize(outputArray);
+        //print 2d coordinates
         printw("(%d, %d)", cursorY, cursorX);
         int j[] = {cursorX, cursorY};
         cellLoc = cursorToCoordinate(j);
+        //print cell location
         printw(" (%d, %d, %d)" ,cellLoc[1], cellLoc[0], cellLoc[2] - 1);
-        move(cursorY, cursorX);
+        //get new input
         c=getch();
         refresh();
     }
@@ -224,6 +220,7 @@ int* cursorToCoordinate(int cursor[])
     return outputArray;
 }
 
+//return next state of of cells based on previous cells
 bool*** nextState(bool cells[][10][10]){
     bool*** outputArray = malloc(sizeof(bool**) * 10);
     //change cell based on neighbours
